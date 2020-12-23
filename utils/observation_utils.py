@@ -1,7 +1,6 @@
 import numpy as np
 from flatland.envs.observations import TreeObsForRailEnv
 
-
 def max_lt(seq, val):
     """
     Return greatest item in seq for which item < val applies.
@@ -54,7 +53,7 @@ def norm_obs_clip(obs, clip_min=-1, clip_max=1, fixed_radius=0, normalize_to_ran
     return np.clip((np.array(obs) - min_obs) / norm, clip_min, clip_max)
 
 
-def _split_node_into_feature_groups(node: TreeObsForRailEnv.Node) -> (np.ndarray, np.ndarray, np.ndarray):
+def _split_node_into_feature_groups(node) -> (np.ndarray, np.ndarray, np.ndarray):
     data = np.zeros(6)
     distance = np.zeros(1)
     agent_data = np.zeros(4)
@@ -76,13 +75,12 @@ def _split_node_into_feature_groups(node: TreeObsForRailEnv.Node) -> (np.ndarray
     return data, distance, agent_data
 
 
-def _split_subtree_into_feature_groups(node: TreeObsForRailEnv.Node, current_tree_depth: int, max_tree_depth: int) -> (np.ndarray, np.ndarray, np.ndarray):
-
+def _split_subtree_into_feature_groups(node, current_tree_depth: int, max_tree_depth: int) -> (np.ndarray, np.ndarray, np.ndarray):
     if node == -np.inf:
         remaining_depth = max_tree_depth - current_tree_depth
         # reference: https://stackoverflow.com/questions/515214/total-number-of-nodes-in-a-tree-data-structure
-        num_remaining_nodes = int((4**(remaining_depth+1) - 1) / (4 - 1))
-        return [-np.inf] * num_remaining_nodes*6, [-np.inf] * num_remaining_nodes, [-np.inf] * num_remaining_nodes*4
+        num_remaining_nodes = int((4 ** (remaining_depth + 1) - 1) / (4 - 1))
+        return [-np.inf] * num_remaining_nodes * 6, [-np.inf] * num_remaining_nodes, [-np.inf] * num_remaining_nodes * 4
 
     data, distance, agent_data = _split_node_into_feature_groups(node)
 
@@ -98,7 +96,7 @@ def _split_subtree_into_feature_groups(node: TreeObsForRailEnv.Node, current_tre
     return data, distance, agent_data
 
 
-def split_tree_into_feature_groups(tree: TreeObsForRailEnv.Node, max_tree_depth: int) -> (np.ndarray, np.ndarray, np.ndarray):
+def split_tree_into_feature_groups(tree, max_tree_depth: int) -> (np.ndarray, np.ndarray, np.ndarray):
     """
     This function splits the tree into three difference arrays of values
     """
@@ -113,7 +111,7 @@ def split_tree_into_feature_groups(tree: TreeObsForRailEnv.Node, max_tree_depth:
     return data, distance, agent_data
 
 
-def normalize_observation(observation: TreeObsForRailEnv.Node, tree_depth: int, observation_radius=0):
+def normalize_observation(observation, tree_depth: int, observation_radius=0):
     """
     This function normalizes the observation used by the RL algorithm
     """
