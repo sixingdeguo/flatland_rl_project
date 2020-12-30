@@ -60,7 +60,7 @@ def train_agent(n_episodes):
         rail_generator=sparse_rail_generator(
             max_num_cities=n_cities,
             seed=seed,
-            grid_mode=False,
+            grid_mode=True,
             max_rails_between_cities=max_rails_between_cities,
             max_rails_in_city=max_rails_in_city
         ),
@@ -108,7 +108,7 @@ def train_agent(n_episodes):
         'gamma': 0.99,
         'buffer_min_size': 0,
         'hidden_size': 256,
-        'use_gpu': False
+        'use_gpu': True
     }
 
     # Double Dueling DQN policy
@@ -172,7 +172,7 @@ def train_agent(n_episodes):
 
         if episode_idx % 100 == 0:
             end = "\n"
-            torch.save(policy.qnetwork_local, './checkpoints/single-' + str(episode_idx) + '.pth')
+            torch.save(policy.qnetwork_local, '../checkpoints/single-' + str(episode_idx) + '.pth')
             action_count = [1] * action_size
         else:
             end = " "
@@ -188,12 +188,15 @@ def train_agent(n_episodes):
         ), end=end)
 
     # Plot overall training progress at the end
+    p1 = plt.figure()
     plt.plot(scores)
     plt.show()
-
+    p1.savefig('../checkpoints/scores_train_id.png')
+	
+    p2 = plt.figure()
     plt.plot(completion)
     plt.show()
-
+    p2.savefig('../checkpoints/completion_train_id.png')
 
 if __name__ == "__main__":
     parser = ArgumentParser()

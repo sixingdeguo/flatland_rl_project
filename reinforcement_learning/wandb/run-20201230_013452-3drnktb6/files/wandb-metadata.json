@@ -1,0 +1,29 @@
+{
+    "os": "Linux-5.4.0-58-generic-x86_64-with-debian-buster-sid",
+    "python": "3.6.8",
+    "heartbeatAt": "2020-12-29T17:34:54.248649",
+    "startedAt": "2020-12-29T17:34:52.128432",
+    "docker": null,
+    "gpu": "TITAN V",
+    "gpu_count": 2,
+    "cpu_count": 56,
+    "cuda": null,
+    "args": [
+        "--use_gpu",
+        "True",
+        "-n",
+        "5000"
+    ],
+    "state": "running",
+    "codePath": "reinforcement_learning/multi_agent_training.py",
+    "program": "multi_agent_training.py",
+    "git": {
+        "remote": "git@gitlab.aicrowd.com:flatland/neurips2020-flatland-starter-kit.git",
+        "commit": "691d1b64347a36e077f3b82c39ffa6ebf3288070"
+    },
+    "email": "2001111713@pku.edu.cn",
+    "root": "/home/zhaoyue/rl_project/neurips2020-flatland-starter-kit",
+    "host": "songjie803",
+    "username": "zhaoyue",
+    "executable": "/home/zhaoyue/anaconda3/envs/flatland-rl/bin/python"
+}

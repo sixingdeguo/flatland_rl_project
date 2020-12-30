@@ -1,4 +1,5 @@
 from datetime import datetime
+import pandas as pd
 import os
 import random
 import sys
@@ -63,7 +64,7 @@ def create_rail_env(env_params, tree_observation):
         width=x_dim, height=y_dim,
         rail_generator=sparse_rail_generator(
             max_num_cities=n_cities,
-            grid_mode=False,
+            grid_mode=True,
             max_rails_between_cities=max_rails_between_cities,
             max_rails_in_city=max_rails_in_city
         ),
@@ -88,6 +89,7 @@ def train_agent(train_params, train_env_params, eval_env_params, obs_params):
     # Unique ID for this training
     now = datetime.now()
     training_id = now.strftime('%y%m%d%H%M%S')
+
 
     # Observation parameters
     observation_tree_depth = obs_params.observation_tree_depth
@@ -186,6 +188,9 @@ def train_agent(train_params, train_env_params, eval_env_params, obs_params):
         training_id
     ))
 
+    completion_list = []
+    score_list = []
+
     for episode_idx in range(n_episodes + 1):
         step_timer = Timer()
         reset_timer = Timer()
@@ -276,17 +281,18 @@ def train_agent(train_params, train_env_params, eval_env_params, obs_params):
         normalized_score = score / (max_steps * train_env.get_num_agents())
         action_probs = action_count / np.sum(action_count)
         action_count = [1] * action_size
-
+        completion_list.append(completion)
+        score_list.append(normalized_score)
         smoothing = 0.99
         smoothed_normalized_score = smoothed_normalized_score * smoothing + normalized_score * (1.0 - smoothing)
         smoothed_completion = smoothed_completion * smoothing + completion * (1.0 - smoothing)
 
         # Print logs
         if episode_idx % checkpoint_interval == 0:
-            torch.save(policy.qnetwork_local, './checkpoints/' + training_id + '-' + str(episode_idx) + '.pth')
+            torch.save(policy.qnetwork_local, '../checkpoints/' + training_id + '-' + str(episode_idx) + '.pth')
 
             if save_replay_buffer:
-                policy.save_replay_buffer('./replay_buffers/' + training_id + '-' + str(episode_idx) + '.pkl')
+                policy.save_replay_buffer('../replay_buffers/' + training_id + '-' + str(episode_idx) + '.pkl')
 
             if train_params.render:
                 env_renderer.close_window()
@@ -354,6 +360,14 @@ def train_agent(train_params, train_env_params, eval_env_params, obs_params):
         writer.add_scalar("timer/learn", learn_timer.get(), episode_idx)
         writer.add_scalar("timer/preproc", preproc_timer.get(), episode_idx)
         writer.add_scalar("timer/total", training_timer.get_current(), episode_idx)
+
+
+###############################################################
+    c = {"completion": completion_list, "score": score_list}  # 转换成字典
+    data = pd.DataFrame(c)
+    # 修改路径！！！
+    data.to_csv("../res_save/result_train.csv")
+
 
 
 def format_action_prob(action_probs):

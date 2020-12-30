@@ -28,7 +28,7 @@ from utils.observation_utils import normalize_observation
 VERBOSE = True
 
 # Checkpoint to use (remember to push it!)
-checkpoint = "checkpoints/201014015722-1500.pth"
+checkpoint = "checkpoints/201230013454-5000.pth"
 
 # Use last action cache
 USE_ACTION_CACHE = True
@@ -52,10 +52,11 @@ state_size = tree_observation.observation_dim * n_nodes
 action_size = 5
 
 # Creates the policy. No GPU on evaluation server.
-policy = DDDQNPolicy(state_size, action_size, Namespace(**{'use_gpu': False}), evaluation_mode=True)
+policy = DDDQNPolicy(state_size, action_size, Namespace(**{'use_gpu': True}), evaluation_mode=True)
 
 if os.path.isfile(checkpoint):
     policy.qnetwork_local = torch.load(checkpoint)
+    print("Checkpoint found")
 else:
     print("Checkpoint not found, using untrained policy! (path: {})".format(checkpoint))
 

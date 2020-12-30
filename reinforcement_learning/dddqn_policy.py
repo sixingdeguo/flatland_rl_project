@@ -37,10 +37,10 @@ class DDDQNPolicy(Policy):
         # Device
         if parameters.use_gpu and torch.cuda.is_available():
             self.device = torch.device("cuda:0")
-            # print("🐇 Using GPU")
+            print("🐇 Using GPU")
         else:
             self.device = torch.device("cpu")
-            # print("🐢 Using CPU")
+            print("🐢 Using CPU")
 
         # Q-Network
         self.qnetwork_local = DuelingQNetwork(state_size, action_size, hidsize1=self.hidsize, hidsize2=self.hidsize).to(self.device)
